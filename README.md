@@ -44,63 +44,58 @@ Each module follows a strict package structure:
 
 ## Getting Started
 
+The recommended way to run this application is using **Docker Compose**, as this ensures the complex initialization of the four separate PostgreSQL databases, port isolation, and the execution of the full microservices cluster works flawlessly.
+
+### 1. Run using Docker Compose (Recommended)
+
 1. Clone the repository:
    ```bash
-   git clone <https://github.com/Abdumalik-ProDev/Nova-University/.git>
+   git clone https://github.com/Abdumalik-ProDev/Nova-University.git
    cd Nova-University
    ```
 
-2. Set up the database:
-   - Create a PostgreSQL database named `nova_db`
-   - Update `.env` file with your database credentials
-
-3. Build the project:
+2. Build and launch all services:
    ```bash
-   ./mvnw clean install
+   docker compose build
+   docker compose up -d
+   ```
+   *Note: This automatically provisions PostgreSQL on port 5433 (to avoid conflicts with local DBs), executes `init.sql` to initialize `nova_student`, `nova_teacher`, `nova_staff`, and `nova_security` databases, builds all applications leveraging Eclipse Temurin JDK 17, and spins up the four microservices.*
+
+3. Monitor logs to ensure they've fully started:
+   ```bash
+   docker compose logs -f
    ```
 
-4. Run the application:
+### 2. Run Locally (Manual Mode)
+
+If you prefer to run it locally without Docker for development:
+1. Ensure Java 17 and Maven 3.6+ are installed.
+2. Ensure you have a local PostgreSQL DB available.
+3. You must execute `./init.sql` against your PostgreSQL server to create the isolated databases.
+4. Modify the `application.yaml` or set environment variables to point to your DB credentials.
+5. In separate terminal instances, run each module:
    ```bash
-   ./mvnw spring-boot:run
+   ./mvnw -pl security-module spring-boot:run
+   ./mvnw -pl staff-module spring-boot:run
+   ./mvnw -pl student-module spring-boot:run
+   ./mvnw -pl teacher-module spring-boot:run
    ```
 
-   Or run individual modules:
-   ```bash
-   cd student-module
-   ../mvnw spring-boot:run
-   ```
+## API Documentation (Swagger)
 
-## API Documentation
+Because Nova is structured as independent microservices, each module serves its own isolated Swagger API specification.
+Once the backend is fully booted via Docker, you can access their APIs at:
 
-Once the application is running, access Swagger UI at:
-- http://localhost:8080/swagger-ui.html
+- **Security Module** (Port 8081): http://localhost:8081/swagger-ui/index.html
+- **Staff Module** (Port 8082): http://localhost:8082/swagger-ui/index.html
+- **Student Module** (Port 8083): http://localhost:8083/swagger-ui/index.html
+- **Teacher Module** (Port 8084): http://localhost:8084/swagger-ui/index.html
 
-## Docker
+## Environment Settings & Common Pitfalls
 
-To run with Docker:
-
-1. Build the images:
-   ```bash
-   docker-compose build
-   ```
-
-2. Start the services:
-   ```bash
-   docker-compose up
-   ```
-
-## Environment Variables
-
-Copy `.env` and configure as needed:
-
-- `DB_HOST`: Database host
-- `DB_PORT`: Database port
-- `DB_NAME`: Database name
-- `DB_USERNAME`: Database username
-- `DB_PASSWORD`: Database password
-- `JWT_SECRET`: JWT secret key
-- `JWT_EXPIRATION`: JWT token expiration time
-- `SERVER_PORT`: Server port
+- **Port Collisions**: If `docker compose up -d` fails, ensure ports `8081` through `8084` are strictly available. PostgreSQL is safely mapped to `5433` by default to not disrupt your existing `5432` daemons.
+- **Lombok Compilation Errors**: If you encounter `java.lang.ExceptionInInitializerError: com.sun.tools.javac.code.TypeTag` locally, you are likely using JDK 21+ with `lombok:1.18.34`. To prevent this, strictly use **JDK 17** locally, or always compile inside the Docker container (`docker compose build`) which safely enforces Alpine Java 17.
+- **Eureka Discovery**: You may see "Eureka HTTP Client" warnings log natively. The codebase anticipates a future Eureka server. We've safely disabled this in Docker Compose by declaring `eureka.client.enabled=false`.
 
 ## Security
 

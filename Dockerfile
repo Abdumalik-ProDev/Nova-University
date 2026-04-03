@@ -1,5 +1,5 @@
-# Use OpenJDK 17 as base image
-FROM openjdk:17-jdk-slim
+# Use Eclipse Temurin 17 as base image
+FROM eclipse-temurin:17-jdk-alpine
 
 # Set working directory
 WORKDIR /app
@@ -9,8 +9,6 @@ COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 
-# Copy source code
-COPY src ./src
 
 # Copy module sources
 COPY student-module ./student-module

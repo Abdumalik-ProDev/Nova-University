@@ -1,38 +1,93 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:15
     container_name: nova-postgres
     environment:
-      POSTGRES_DB: nova_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - nova-network
 
-  nova-app:
+  security-module:
     build: .
-    container_name: nova-app
+    container_name: nova-security
+    command: ["java", "-jar", "security-module/target/security-module-0.0.1-SNAPSHOT.jar"]
     environment:
       - DB_HOST=postgres
       - DB_PORT=5432
-      - DB_NAME=nova_db
+      - DB_NAME=nova_security
       - DB_USERNAME=postgres
       - DB_PASSWORD=password
-      - JWT_SECRET=mySecretKeyForJwtTokenGenerationThatIsLongEnoughToBeSecure
-      - JWT_EXPIRATION=36000000
-      - SERVER_PORT=8080
-      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://localhost:8761/eureka/
-      - LOGGING_LEVEL_ROOT=INFO
-      - LOGGING_LEVEL_COM_NOVA=DEBUG
+      - SERVER_PORT=8081
+      - eureka.client.enabled=false
       - SPRING_PROFILES_ACTIVE=dev
     ports:
-      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      - postgres
+    networks:
+      - nova-network
+
+  staff-module:
+    build: .
+    container_name: nova-staff
+    command: ["java", "-jar", "staff-module/target/staff-module-0.0.1-SNAPSHOT.jar"]
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=nova_staff
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=password
+      - SERVER_PORT=8082
+      - eureka.client.enabled=false
+      - SPRING_PROFILES_ACTIVE=dev
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres
+    networks:
+      - nova-network
+
+  student-module:
+    build: .
+    container_name: nova-student
+    command: ["java", "-jar", "student-module/target/student-module-0.0.1-SNAPSHOT.jar"]
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=nova_student
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=password
+      - SERVER_PORT=8083
+      - eureka.client.enabled=false
+      - SPRING_PROFILES_ACTIVE=dev
+    ports:
+      - "8083:8083"
+    depends_on:
+      - postgres
+    networks:
+      - nova-network
+
+  teacher-module:
+    build: .
+    container_name: nova-teacher
+    command: ["java", "-jar", "teacher-module/target/teacher-module-0.0.1-SNAPSHOT.jar"]
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=nova_teacher
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=password
+      - SERVER_PORT=8084
+      - eureka.client.enabled=false
+      - SPRING_PROFILES_ACTIVE=dev
+    ports:
+      - "8084:8084"
     depends_on:
       - postgres
     networks:
