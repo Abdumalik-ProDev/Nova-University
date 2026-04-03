@@ -46,8 +46,8 @@ Each module follows a strict package structure:
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
-   cd Nova
+   git clone <https://github.com/Abdumalik-ProDev/Nova-University/.git>
+   cd Nova-University
    ```
 
 2. Set up the database:
