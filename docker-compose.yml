@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: nova-postgres
+    environment:
+      POSTGRES_DB: nova_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - nova-network
+
+  nova-app:
+    build: .
+    container_name: nova-app
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=nova_db
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=password
+      - JWT_SECRET=mySecretKeyForJwtTokenGenerationThatIsLongEnoughToBeSecure
+      - JWT_EXPIRATION=36000000
+      - SERVER_PORT=8080
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://localhost:8761/eureka/
+      - LOGGING_LEVEL_ROOT=INFO
+      - LOGGING_LEVEL_COM_NOVA=DEBUG
+      - SPRING_PROFILES_ACTIVE=dev
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - nova-network
+
+volumes:
+  postgres_data:
+
+networks:
+  nova-network:
+    driver: bridge
