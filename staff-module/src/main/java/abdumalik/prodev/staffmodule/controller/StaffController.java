@@ -23,7 +23,7 @@ public class StaffController {
     private final StaffService staffService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Create staff", description = "Create a new staff member")
     public ResponseEntity<StaffResponseDTO> createStaff(@Valid @RequestBody StaffRequestDTO dto) {
         StaffResponseDTO response = staffService.createStaff(dto);
@@ -31,7 +31,7 @@ public class StaffController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasRole('STAFF')")
     @Operation(summary = "Get all staff", description = "Retrieve all staff members")
     public ResponseEntity<List<StaffResponseDTO>> getAllStaff() {
         List<StaffResponseDTO> staff = staffService.getAllStaff();
@@ -39,7 +39,7 @@ public class StaffController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasRole('STAFF')")
     @Operation(summary = "Get staff by ID", description = "Retrieve a staff member by ID")
     public ResponseEntity<StaffResponseDTO> getStaffById(@PathVariable UUID id) {
         StaffResponseDTO staff = staffService.getStaffById(id);
@@ -47,7 +47,7 @@ public class StaffController {
     }
 
     @GetMapping("/by-email")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasRole('STAFF')")
     @Operation(summary = "Get staff by email", description = "Retrieve a staff member by email")
     public ResponseEntity<StaffResponseDTO> getStaffByEmail(@RequestParam String email) {
         StaffResponseDTO staff = staffService.getStaffByEmail(email);
@@ -55,7 +55,7 @@ public class StaffController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Update staff", description = "Update an existing staff member")
     public ResponseEntity<StaffResponseDTO> updateStaff(@PathVariable UUID id, @Valid @RequestBody StaffRequestDTO dto) {
         StaffResponseDTO response = staffService.updateStaff(id, dto);
@@ -63,7 +63,7 @@ public class StaffController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Delete staff", description = "Delete a staff member")
     public ResponseEntity<Void> deleteStaff(@PathVariable UUID id) {
         staffService.deleteStaff(id);
