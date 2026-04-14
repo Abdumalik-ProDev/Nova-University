@@ -12,6 +12,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;import o
 @Import(SecurityConfig.class) // added this line cause spring cannot find it
 public class StaffModuleApplication {
     public static void main(String[] args){
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        System.out.println("NOVA STAFF MODULE IS STARTING - VERSION 2.0");
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         SpringApplication.run(StaffModuleApplication.class, args);
     }
 }
