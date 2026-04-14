@@ -20,11 +20,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Order(Ordered.HIGHEST_PRECEDENCE) // FORCE this one to be the VERY FIRST config loaded
 public class StaffSecurityConfig {
 
-//    static {
-//        System.out.println("DEBUG: StaffSecurityConfig class has been loaded by the JVM");
-//    }
+    static {
+        System.out.println("DEBUG: StaffSecurityConfig class has been loaded by the JVM");
+    }
 
-//    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     @Primary // Spring ga FilterChain larni adashtirmasligi uchun va asosan shu classni ishlatishi uchun
@@ -33,13 +33,12 @@ public class StaffSecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-//                .requestMatchers("/api/v1/staff/public/**").permitAll()
-//                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
-//                .anyRequest().authenticated()
-                    .anyRequest().permitAll()
-            );
-//            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .requestMatchers("/api/v1/staff/public/**").permitAll()
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }
