@@ -25,7 +25,8 @@ RUN ./mvnw clean package -DskipTests
 # Expose port
 EXPOSE 8080
 
-CMD ["java", "-jar", "staff-module/target/staff-module-0.0.1-SNAPSHOT.jar"]
+# Change this to the absolute path of the staff-module JAR
+CMD ["java", "-jar", "/app/staff-module/target/staff-module-0.0.1-SNAPSHOT.jar"]
 
 # Run the application
 #CMD ["java", "-jar", "target/*.jar"]
