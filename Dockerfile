@@ -25,6 +25,8 @@ RUN ./mvnw clean package -DskipTests
 # Expose port
 EXPOSE 8080
 
+CMD ["java", "-jar", "staff-module/target/staff-module-0.0.1-SNAPSHOT.jar"]
+
 # Run the application
-CMD ["java", "-jar", "target/*.jar"]
+#CMD ["java", "-jar", "target/*.jar"]
 # The one with *.jar will not run since Docker cannot expand * wildcard, we must specify like "target/nova-university-0.0.1-SNAPSHOT.jar"

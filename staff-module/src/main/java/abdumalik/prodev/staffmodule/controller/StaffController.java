@@ -22,6 +22,11 @@ public class StaffController {
 
     private final StaffService staffService;
 
+    @GetMapping("/public/test")
+    public String test() {
+        return "Staff Module is ALIVE";
+    }
+
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Create staff", description = "Create a new staff member")

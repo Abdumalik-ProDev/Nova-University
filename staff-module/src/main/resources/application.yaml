@@ -1,4 +1,16 @@
 spring:
+  security:
+    user:
+      name: user
+      autoconfigure:
+        exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+        logging:
+          level:
+            org.springframework.security: DEBUG
+            org.springframework.web: DEBUG
+
+
   application:
     name: staff-module
   datasource:
@@ -23,3 +35,5 @@ eureka:
       defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:http://localhost:8761/eureka/}
   instance:
     prefer-ip-address: true
+
+
